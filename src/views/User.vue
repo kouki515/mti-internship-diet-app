@@ -24,19 +24,19 @@
     <form class="ui form">
       <div class="field">
         <label for="nickname">ユーザー名</label>
-        <input v-model="nickname" type="text" name="Nickname" placeholder="Nickname"/>
+        <input v-model="nickname" type="text" name="Nickname" placeholder="Nickname" />
       </div>
-      
+
       <div class="field">
         <label>年齢</label>
         <div class="inline fields">
           <div class="field">
-            <input v-model.number="start" type="text" name="agestart"/>
+            <input v-model.number="start" type="text" name="agestart" />
             <label for="agestart">歳から</label>
           </div>
-          
+
           <div class="field">
-            <input v-model.number="end" type="text" name="ageend"/>
+            <input v-model.number="end" type="text" name="ageend" />
             <label for="ageend">歳まで</label>
           </div>
         </div>
@@ -81,34 +81,33 @@ export default {
 
   methods: {
     // Vue.jsで使う関数はここで記述する
-    
+
   },
-  
-  created: async function() {
-      const headers = {'Authorization': 'mtiToken'};
-      
-      try {
-        /* global fetch */
-        const res = await fetch(baseUrl + `/users`, {
-          method: 'GET',
-          headers
-        });
-        
-        const text = await res.text();
-        const jsonData = text ? JSON.parse(text) : {}
-  
-        // faild
-        if (!res.ok) {
-          const errorMessage = jsonData.message ?? 'error message not found';
-          throw new Error(errorMessage);
-        }
-        
-        // success
-        this.users = jsonData.users;
-      } catch (e) {
-        
+
+  created: async function () {
+    const headers = { 'Authorization': 'mtiToken' };
+
+    try {
+      /* global fetch */
+      const res = await fetch(baseUrl + `/users`, {
+        method: 'GET',
+        headers
+      });
+
+      const text = await res.text();
+      const jsonData = text ? JSON.parse(text) : {}
+
+      // faild
+      if (!res.ok) {
+        const errorMessage = jsonData.message ?? 'error message not found';
+        throw new Error(errorMessage);
       }
+
+      // success
+      this.users = jsonData.users;
+    } catch (e) {
     }
+  }
 }
 </script>
 
