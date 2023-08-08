@@ -7,24 +7,24 @@
           <div class="field">
             <div class="ui left icon input">
               <i class="user icon"></i>
-              <input v-model="user.userId" type="text" placeholder="ID"/>
+              <input v-model="user.userId" type="text" placeholder="ID" />
             </div>
           </div>
-          
+
           <div class="field">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input v-model="user.password" type="password" placeholder="password"/>
+              <input v-model="user.password" type="password" placeholder="password" />
             </div>
           </div>
-          
+
           <div class="field" v-if="!isLogin">
             <div class="ui left icon input">
               <i class="tag icon"></i>
-              <input v-model="user.nickname" type="text" placeholder="Nickname"/>
+              <input v-model="user.nickname" type="text" placeholder="Nickname" />
             </div>
           </div>
-          
+
           <div class="field" v-if="!isLogin">
             <div class="ui left icon input">
               <i class="user icon"></i>
@@ -84,8 +84,8 @@ export default {
   methods: {
     async submit() {
       if (this.isLogin == false) {
-        
-        const headers = {'Authorization': 'mtiToken'};
+
+        const headers = { 'Authorization': 'mtiToken' };
         // リクエストボディを指定する
         const requestBody = {
           userId: this.user.userId,
@@ -93,29 +93,29 @@ export default {
           nickname: this.user.nickname,
           age: this.user.age,
         }
-  
+
         try {
           /* global fetch */
-          const res = await fetch(baseUrl + '/user/signup',
-          {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers
-          });
-  
+          // const res = await fetch(baseUrl + '/user/signup',
+          // {
+          //   method: 'POST',
+          //     body: JSON.stringify(requestBody),
+          //       headers
+          // });
+
           const text = await res.text();
           const jsonData = text ? JSON.parse(text) : {}
-  
+
           // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
           if (!res.ok) {
             const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
             throw new Error(errorMessage);
           }
-          
+
           // 成功時の処理
           window.localStorage.setItem('token', jsonData.token);
           window.localStorage.setItem('userId', this.user.userId);
-          
+
           this.$router.push({ name: 'Home' })
           console.log(jsonData);
         } catch (e) {
@@ -123,42 +123,42 @@ export default {
         }
       } else if (this.isLogin) {
         // リクエストボディを指定する
-        const headers = {'Authorization': 'mtiToken'};
-        
+        const headers = { 'Authorization': 'mtiToken' };
+
         const requestBody = {
           userId: this.user.userId,
           password: this.user.password,
         }
-  
+
         try {
           /* global fetch */
           const res = await fetch(baseUrl + '/user/login',
-          {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers
-          });
-  
+            {
+              method: 'POST',
+              body: JSON.stringify(requestBody),
+              headers
+            });
+
           const text = await res.text();
           const jsonData = text ? JSON.parse(text) : {}
-  
+
           // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
           if (!res.ok) {
             const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
             throw new Error(errorMessage);
           }
-          
+
           // 成功時の処理
           window.localStorage.setItem('token', jsonData.token);
           window.localStorage.setItem('userId', this.user.userId);
-          
+
           this.$router.push({ name: 'Home' })
         } catch (e) {
           // エラー時の処理
         }
       }
     },
-    
+
     // Vue.jsで使う関数はここで記述する
     toggleMode() {
       this.isLogin = !this.isLogin
