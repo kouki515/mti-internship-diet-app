@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
   
   try {
     const insertSqlCommand = `INSERT INTO ${mysqlTableName}(name, email, password) VALUES ('${name}', '${mailaddress}', '${password}')`;
-    const data = await new Promise((resolve, reject) => {
+    const result = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
         if (error) {
@@ -57,7 +57,8 @@ exports.handler = async (event, context) => {
       });
     });
     response.statusCode = 201;
-    response.body = JSON.stringify({ data });
+    const userId = result.data.insertId
+    response.body = JSON.stringify({ userId });
     
     connection.end();
   } catch (e) {
