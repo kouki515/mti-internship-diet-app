@@ -19,10 +19,10 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  const {name, mailaddress, password} = JSON.parse(event.body);
+  const {mailaddress, password} = JSON.parse(event.body);
 
   // validate
-  if (!name || !mailaddress || !password) {
+  if (!mailaddress || !password) {
     response.statusCode = 400;
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",
@@ -38,9 +38,9 @@ exports.handler = async (event, context) => {
     password : mysqlPassword,
     database : mysqlDbname
   });
-  
+
   try {
-    const insertSqlCommand = `INSERT INTO ${mysqlTableName}(name, email, password) VALUES ('${name}', '${mailaddress}', '${password}')`;
+    const selectSqlCommand = `SELECT id, name, password FROM ${mysqlTableName} WHERE email = '${mailaddress}' LIMIT 1`;
     const data = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
@@ -48,30 +48,21 @@ exports.handler = async (event, context) => {
             throw new Error('error connecting: ' + error.stack);
         }
       });
-      // exec insert
-      connection.query(insertSqlCommand, function(error, results, fields) {
+      // exec select
+      connection.query(selectSqlCommand, function(error, results, fields) {
         if (error) {
-          throw new Error("MySQL Insert Error");
-          resolve(results);
+          reject("not found user data");
         }
+        resolve(results);
       });
     });
-
-    const selectSqlCommand = `SELECT id FROM ${mysqlTableName} WHERE email = '${mailaddress}' LIMIT 1`;
-    // exec select
-    connection.query(selectSqlCommand, function(error, results, fields) {
-      if (error) {
-        throw new Error("MySQL Select Error");
-      }
-      response.statusCode = 201;
-      response.body = JSON.stringify({ data });
-    });
-
+    response.body = JSON.stringify({ data });
+    
     connection.end();
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: "予期せぬエラーが発生しました。",
+      message: data,
       errorDetail: e.toString(),
     });
   }
