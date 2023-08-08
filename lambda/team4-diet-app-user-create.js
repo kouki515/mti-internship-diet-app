@@ -67,7 +67,7 @@ exports.handler = async (event, context) => {
       response.body = JSON.stringify({ data });
     });
 
-    connection.end
+    connection.end();
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
