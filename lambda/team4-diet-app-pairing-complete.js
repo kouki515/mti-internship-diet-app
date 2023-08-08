@@ -40,8 +40,8 @@ exports.handler = async (event, context) => {
     return response;
   }
 
-  // generate connection
-  const connection = mysql.createConnection({
+  // generate pool
+  const pool = mysql.createPool({
     host     : mysqlHost,
     user     : mysqlUser,
     password : mysqlPassword,
@@ -52,13 +52,13 @@ exports.handler = async (event, context) => {
     const selectSqlCommand = `SELECT do_dieter FROM ${selectTableName} WHERE passphrase = '${passphrase}' LIMIT 1`;
     const selectData = await new Promise((resolve, reject) => {
       // get connect
-      connection.connect((error) => {
+      pool.getConnection((error) => {
         if (error) {
             reject('error connecting: ' + error.stack);
         }
       });
       // exec select
-      connection.query(selectSqlCommand, function(error, results, fields) {
+      pool.query(selectSqlCommand, function(error, results, fields) {
         if (error) {
           reject("not found pair user id");
         }
@@ -66,30 +66,27 @@ exports.handler = async (event, context) => {
       });
     });
 
-    console.log(selectData);
+    const dieterUserId = selectData.do_dieter;
 
-
-    const insertSqlCommand = `INSERT INTO ${insertTableName}(do_dieter, passphrase) VALUES ('${userId}', '${passphrase}')`;
-    const data = await new Promise((resolve, reject) => {
+    const insertSqlCommand = `INSERT INTO ${insertTableName}(watcher_dieter_id, do_dieter_id) VALUES ('${watcherUserId}', '${dieterUserId}')`;
+    const insertData = await new Promise((resolve, reject) => {
       // get connect
-      connection.connect((error) => {
+      pool.getConnection((error) => {
         if (error) {
             reject('error connecting: ' + error.stack);
         }
       });
       // exec insert
-      connection.query(insertSqlCommand, function(error, results, fields) {
+      pool.query(insertSqlCommand, function(error, results, fields) {
         if (error) {
-          reject("MySQL Insert Error");
+          reject(error);
         }
         resolve(results);
       });
     });
-    response.statusCode = 201;
-    const message = "insert success"
-    response.body = JSON.stringify({ message });
+    response.body = JSON.stringify({ insertData });
 
-    connection.end();
+    pool.end();
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
