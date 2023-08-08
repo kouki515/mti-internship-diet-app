@@ -19,10 +19,10 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  const {mailaddress, password} = JSON.parse(event.body);
+  const {name, mailaddress, password} = JSON.parse(event.body);
 
   // validate
-  if (!mailaddress || !password) {
+  if (!name || !mailaddress || !password) {
     response.statusCode = 400;
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",
@@ -31,27 +31,43 @@ exports.handler = async (event, context) => {
     return response;
   }
 
+  // generate connection
+  const connection = mysql.createConnection({
+    host     : mysqlHost,
+    user     : mysqlUser,
+    password : mysqlPassword,
+    database : mysqlDbname
+  });
+  
   try {
-    // generate connection
-    const connection = mysql.createConnection({
-      host     : mysqlHost,
-      user     : mysqlUser,
-      password : mysqlPassword,
-      database : mysqlDbname
+    const insertSqlCommand = `INSERT INTO ${mysqlTableName}(name, email, password) VALUES ('${name}', '${mailaddress}', '${password}')`;
+    const data = await new Promise((resolve, reject) => {
+      // get connect
+      connection.connect((error) => {
+        if (error) {
+            throw new Error('error connecting: ' + error.stack);
+        }
+      });
+      // exec insert
+      connection.query(insertSqlCommand, function(error, results, fields) {
+        if (error) {
+          throw new Error("MySQL Insert Error");
+          resolve(results);
+        }
+      });
     });
 
-    const selectSqlCommand = `SELECT id, password FROM "${mysqlTableName}" WHERE email = "${mailaddress}" LIMIT 1`;
-
+    const selectSqlCommand = `SELECT id FROM ${mysqlTableName} WHERE email = '${mailaddress}' LIMIT 1`;
     // exec select
     connection.query(selectSqlCommand, function(error, results, fields) {
-      const userId = results[0].id;
       if (error) {
         throw new Error("MySQL Select Error");
-      } else if (!results) {
-        throw new Error("not found mailaddress");
-      } else if (results[0].password)
+      }
+      response.statusCode = 201;
+      response.body = JSON.stringify({ data });
     });
-    
+
+    connection.end();
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
