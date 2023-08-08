@@ -56,7 +56,7 @@ exports.handler = async (event, context) => {
         }
       });
       // exec update
-      connection.query(insertSqlCommand, function(error, results, fields) {
+      connection.query(updateSqlCommand, function(error, results, fields) {
         if (error) {
           reject("MySQL Update Error");
         }
