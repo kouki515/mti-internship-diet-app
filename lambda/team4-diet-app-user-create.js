@@ -59,17 +59,15 @@ exports.handler = async (event, context) => {
 
       // exec select
       connection.query(selectSqlCommand, function(error, results, fields) {
-        const userId = results[0].id;
         if (error || userId) {
           throw new Error("MySQL Select Error");
-        } else {
-          response.statusCode = 201;
-          response.body = JSON.stringify({ userId, token });
         }
+        resolve(results);
       });
-
     });
-
+    response.statusCode = 201;
+    response.body = JSON.stringify({ data });
+    
     connection.end
   } catch (e) {
     response.statusCode = 500;
