@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	
+
 	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -35,6 +35,11 @@ func init() {
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	
+	token := request.Headers["authorization"]
+	if token != "mtiToken" {
+		return events.APIGatewayProxyResponse{StatusCode: 401, Body: "Unauthorized"}, nil
+	}
+
 	userIDString,ok := request.QueryStringParameters["user_id"]
 	if !ok {
 		return events.APIGatewayProxyResponse{StatusCode: 400, Body: "Invalid payload"}, nil
@@ -51,7 +56,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	FROM weight_logs GROUP BY timestamp) w2 ON w1.timestamp = w2.timestamp AND w1.created_at = w2.latest_created_at WHERE 
 	user_id = ? ORDER BY w1.timestamp DESC
 	`, userIDInt)
-	
+
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to query DB"}, err
 	}
