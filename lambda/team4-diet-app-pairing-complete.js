@@ -48,7 +48,7 @@ exports.handler = async (event, context) => {
   });
   
   try {
-    const selectSqlCommand = `SELECT do_dieter FROM ${mysqlTableName} WHERE passphrase = '${passphrase}' LIMIT 1`;
+    const selectSqlCommand = `SELECT do_dieter FROM ${selectTableName} WHERE passphrase = '${passphrase}' LIMIT 1`;
     const selectData = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
     console.log(selectData);
 
 
-    const insertSqlCommand = `INSERT INTO ${mysqlTableName}(do_dieter, passphrase) VALUES ('${userId}', '${passphrase}')`;
+    const insertSqlCommand = `INSERT INTO ${insertTableName}(do_dieter, passphrase) VALUES ('${userId}', '${passphrase}')`;
     const data = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
