@@ -46,7 +46,7 @@ exports.handler = async (event, context) => {
       // get connect
       connection.connect((error) => {
         if (error) {
-            throw new Error('error connecting: ' + error.stack);
+          reject('error connecting: ' + error.stack);
         }
       });
       // exec select
