@@ -8,9 +8,7 @@ const mysqlHost      = "team4-db.cylsclnu96ov.ap-northeast-1.rds.amazonaws.com";
 const mysqlUser      = "admin";
 const mysqlDbname    = "teams4";
 const mysqlPassword  = "j2002214J";
-
-const selectTableName = "pairing_processes";
-const insertTableName = "pair_users";
+const mysqlTableName = "user_details";
 
 exports.handler = async (event, context) => {
   const response = {
@@ -21,11 +19,12 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  const {watcherUserId, passphrase} = JSON.parse(event.body);
+  // get parm data
+  const {userId} = JSON.parse(event.body);
   const token = event.headers.authorization;
 
   // validate
-  if (!watcherUserId || !passphrase) {
+  if (!userId) {
     response.statusCode = 400;
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",
@@ -40,55 +39,34 @@ exports.handler = async (event, context) => {
     return response;
   }
 
-  // generate pool
-  const pool = mysql.createPool({
+  // generate connection
+  const connection = mysql.createConnection({
     host     : mysqlHost,
     user     : mysqlUser,
     password : mysqlPassword,
     database : mysqlDbname
   });
-  
+
   try {
-    const selectSqlCommand = `SELECT do_dieter FROM ${selectTableName} WHERE passphrase = '${passphrase}' LIMIT 1`;
-    const selectData = await new Promise((resolve, reject) => {
+    const selectSqlCommand = `SELECT * FROM ${mysqlTableName} WHERE user_id = '${userId}' LIMIT 1`;
+    const data = await new Promise((resolve, reject) => {
       // get connect
-      pool.getConnection((error) => {
+      connection.connect((error) => {
         if (error) {
             reject('error connecting: ' + error.stack);
         }
       });
       // exec select
-      pool.query(selectSqlCommand, function(error, results, fields) {
+      connection.query(selectSqlCommand, function(error, results, fields) {
         if (error) {
-          reject("not found pair user id");
+          reject("not found user id");
         }
         resolve(results);
       });
     });
+    response.body = JSON.stringify({ data });
 
-    const dieterUserId = selectData[0].do_dieter;
-
-    const insertSqlCommand = `INSERT INTO ${insertTableName}(watcher_dieter_id, do_dieter_id) VALUES ('${watcherUserId}', '${dieterUserId}')`;
-    const insertData = await new Promise((resolve, reject) => {
-      // get connect
-      pool.getConnection((error) => {
-        if (error) {
-            reject('error connecting: ' + error.stack);
-        }
-      });
-      // exec insert
-      pool.query(insertSqlCommand, function(error, results, fields) {
-        if (error) {
-          reject(error);
-        }
-        resolve(results);
-      });
-    });
-    response.statusCode = 201;
-    const message = "insert success"
-    response.body = JSON.stringify({ message });
-
-    pool.end();
+    connection.end();
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
