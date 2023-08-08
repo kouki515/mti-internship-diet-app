@@ -54,7 +54,8 @@ exports.handler = async (event, context) => {
         if (error) {
           reject("not found user data");
         } else if (results.password !== password) {
-          throw new Error("not match password")
+          response.body = JSON.stringify({ data: "パスワードが一致しません"});
+          return response;
         }
         resolve(results);
       });
