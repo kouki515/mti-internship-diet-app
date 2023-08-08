@@ -64,7 +64,7 @@ exports.handler = async (event, context) => {
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: "予期せぬエラーが発生しました。",
+      message: "予期せぬエラーが発生しました",
       errorDetail: e.toString(),
     });
   }
