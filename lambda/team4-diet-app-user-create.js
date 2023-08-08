@@ -52,7 +52,7 @@ exports.handler = async (event, context) => {
     const selectSqlCommand = `SELECT id FROM "${mysqlTableName}" WHERE email = "${mailaddress}" LIMIT 1`;
 
     // exec select
-    connection.query(insertSqlCommand, function(error, results, fields) {
+    connection.query(selectSqlCommand, function(error, results, fields) {
       const userId = results[0].id;
       if (error || userId) {
         throw new Error("MySQL Select Error");
