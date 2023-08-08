@@ -54,7 +54,7 @@ exports.handler = async (event, context) => {
           throw new Error("MySQL Insert Error");
         }
       });
-      resolve(results);
+      resolve(result);
     });
     response.statusCode = 201;
     const userId = result.insertId
