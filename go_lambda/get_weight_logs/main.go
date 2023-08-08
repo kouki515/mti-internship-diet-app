@@ -18,8 +18,8 @@ type Request struct{
 }
 
 type Response struct{
-	Timestamp string `json:"timestamp"`
-	TodayWeight float32 `json:"today_weight"`
+	TimeStamp string `json:"time_stamp"`
+	WeightLog float32 `json:"weight_log"`
 }
 
 var db *sql.DB
@@ -34,7 +34,7 @@ func init() {
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-
+	
 	userIDString,ok := request.QueryStringParameters["user_id"]
 	if !ok {
 		return events.APIGatewayProxyResponse{StatusCode: 400, Body: "Invalid payload"}, nil
@@ -45,7 +45,13 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return events.APIGatewayProxyResponse{StatusCode: 400, Body: "Invalid user_id"}, nil
 	}
 
-	rows, err := db.Query("SELECT timestamp, MAX(today_weight) as today_weight FROM weight_logs GROUP BY timestamp ORDER BY timestamp DESC", userIDInt)
+	rows, err := db.Query(
+	`
+	SELECT w1.timestamp, w1.today_weight FROM weight_logs w1 JOIN (SELECT timestamp, MAX(created_at) AS latest_created_at 
+	FROM weight_logs GROUP BY timestamp) w2 ON w1.timestamp = w2.timestamp AND w1.created_at = w2.latest_created_at WHERE 
+	user_id = ? ORDER BY w1.timestamp DESC
+	`, userIDInt)
+	
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to query DB"}, err
 	}
@@ -55,10 +61,12 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	var items []Response
 	for rows.Next() {
 		var item Response
-		err = rows.Scan(&item.Timestamp, &item.TodayWeight)
+		err = rows.Scan(&item.TimeStamp, &item.WeightLog)
 		if err != nil {
 			return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to read DB result"}, err
 		}
+
+
 		items = append(items, item)
 	}
 
