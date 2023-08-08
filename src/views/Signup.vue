@@ -1,112 +1,109 @@
 <template>
   <div>
+    <!--ログインフォーム-->
     <div class="ui main container">
-      <header>
+      <header v-if="isLogin">
         <h1>LOGIN</h1>
       </header>
-      <h4>必要なログイン情報をご入力ください。</h4>
-      <form class="ui large form"> <!--ログインフォーム-->
-        <div class="field">
-          <div class="t">
-            <label for="">メールアドレス</label>
-            <input type="email" placeholder="12345@example.com" required>
+      <div class="ui segment" v-if="isLogin">
+        <h4>必要なログイン情報をご入力ください。</h4>
+        <form class="ui large form">
+          <div class="field">
+            <div class="t">
+              <label for="">メールアドレス</label>
+              <input type="email" placeholder="12345@example.com" required>
+            </div>
+            <div class="t">
+              <label for="">パスワード</label>
+              <input type="password" maxlength="15" pattern="^[a-zA-Z0-9]+$" required>
+            </div>
           </div>
-          <div class="t">
-            <label for="">パスワード</label>
-            <input type="password" maxlength="15" pattern="^[a-zA-Z0-9]+$" required>
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox">
+              <label for="">パスワードを保存する</label>
+            </div>
           </div>
+          <button class="ui olive fluid button" type="submit">ログイン</button>
+        </form>
+        <div class="y">
+          <button class="ui black basic fluid button" type="button" @click="DieterMode()">登録</button>
         </div>
-        <div class="field">
-          <div class="ui checkbox">
-            <input type="checkbox">
-            <label for="">パスワードを保存する</label>
-          </div>
+        <div class="s">
+          <a href="" class="a">ログインでお困りの方はこちら</a>
         </div>
-        <button class="ui olive fluid button" type="submit">ログイン</button>
-      </form>
-      <div class="y">
-        <button class="ui black basic fluid button" type="button">登録</button>
-      </div>
-      <div class="s">
-        <a href="" class="a">ログインでお困りの方はこちら</a>
-      </div>
-      <div class="">
-        <button class="ui black basic fluid button" type="button">合言葉をお持ちの方はこちら</button>
+        <div>
+          <button class="ui black basic fluid button" type="button" @click="WatcherMode()">合言葉をお持ちの方はこちら</button>
+        </div>
       </div>
     </div>
+    <!-- dieterの新規登録 -->
     <div class="ui container">
-      <h1 class="ui center aligned header">サインアップ（ダイエッター）</h1>
-      <form class="ui form" action="/signup" method="post">
-        <div class="field">
-          <label for="email">メールアドレス：</label>
-          <input type="email" id="email" name="email" required v-model="dieter.email">
-        </div>
-
-        <div class="field">
-          <label for="password">パスワード：</label>
-          <input type="password" id="password" name="password" required v-model="dieter.password">
-        </div>
-
-        <div class="field">
-          <label for="username">ユーザーネーム：</label>
-          <input type="text" id="username" name="username" required v-model="dieter.username">
-        </div>
-
-        <div class="field">
-          <label for="height">身長（cm）：</label>
-          <input type="number" id="height" name="height" v-model.number="dieter.height">
-        </div>
-
-        <div class="field">
-          <label for="weight">体重（kg）：</label>
-          <input type="number" id="weight" name="weight" v-model="dieter.weight">
-        </div>
-
-        <div class="field">
-          <label for="weight">目標体重（kg）：</label>
-          <input type="number" id="weight" name="weight" v-model="dieter.weight_goal">
-        </div>
-
-        <div class="field">
-          <label for="age">年齢：</label>
-          <input type="number" id="age" name="age" required v-model.number="dieter.age">
-        </div>
-
-        <div class="field">
-          <label for="secret_word">合言葉：</label>
-          <input type="password" id="secret_word" name="secret_word" placeholder="合言葉を決めてください" required
-            v-model="dieter.secret_word">
-        </div>
-
-        <button class="ui button primary" type="submit" @click="submit()">サインアップ</button>
-      </form>
-    </div>
-    <div class="ui main container">
-      <div class="ui container">
-        <h1 class="ui center aligned header">サインアップ（ウォッチャー）</h1>
-        <form class="ui form" action="/signup" method="post">
+      <div class="ui segment" v-if="isDiet">
+        <h1 class="ui center aligned header">サインアップ（ダイエッター）</h1>
+        <form class="ui form">
           <div class="field">
             <label for="email">メールアドレス：</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" required v-model="user.email">
           </div>
-
           <div class="field">
             <label for="password">パスワード：</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" required v-model="user.password">
           </div>
-
           <div class="field">
             <label for="username">ユーザーネーム：</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required v-model="user.username">
           </div>
-
+          <div class="field">
+            <label for="height">身長（cm）：</label>
+            <input type="number" id="height" name="height" v-model.number="user.height">
+          </div>
+          <div class="field">
+            <label for="weight">体重（kg）：</label>
+            <input type="number" id="weight" name="weight" v-model="user.weight">
+          </div>
+          <div class="field">
+            <label for="weight">目標体重（kg）：</label>
+            <input type="number" id="weight" name="weight" v-model="user.weight_goal">
+          </div>
+          <div class="field">
+            <label for="age">年齢：</label>
+            <input type="number" id="age" name="age" required v-model.number="user.age">
+          </div>
           <div class="field">
             <label for="secret_word">合言葉：</label>
-            <input type="password" id="secret_word" name="secret_word" placeholder="教えてもらった合言葉を入れて下さい" required>
+            <input type="password" id="secret_word" name="secret_word" placeholder="合言葉を決めてください" required
+              v-model="user.secret_word">
           </div>
-
-          <button class="ui button primary" type="submit">サインアップ</button>
+          <button class="ui button primary" type="submit" @click="submit()">サインアップ</button>
         </form>
+      </div>
+    </div>
+    <!-- watcherの新規登録ページ -->
+    <div class="ui main container">
+      <div class="ui container">
+        <div class="ui segment" v-if="isWatch">
+          <h1 class="ui center aligned header">サインアップ（ウォッチャー）</h1>
+          <form class="ui form">
+            <div class="field">
+              <label for="email">メールアドレス：</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div class="field">
+              <label for="password">パスワード：</label>
+              <input type="password" id="password" name="password" required>
+            </div>
+            <div class="field">
+              <label for="username">ユーザーネーム：</label>
+              <input type="text" id="username" name="username" required>
+            </div>
+            <div class="field">
+              <label for="secret_word">合言葉：</label>
+              <input type="password" id="secret_word" name="secret_word" placeholder="教えてもらった合言葉を入れて下さい" required>
+            </div>
+            <button class="ui button primary" type="submit">サインアップ</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -129,12 +126,14 @@ export default {
     // Vue.jsで使う変数はここに記述する
     return {
       isDiet: false,
+      isWatch: false,
       isLogin: true,
       // ダイエットする人に必要な変数
-      dieter: {
+      user: {
         email: "testmail@icloud.com",
         password: "testpas",
         username: "testname",
+        role: "dieter",
         height: 170,
         weight: 60,
         weight_goal: 50,
@@ -227,6 +226,18 @@ export default {
       //     // エラー時の処理
       //   }
       // }
+    },
+    // dieterの新規登録の表示
+    DieterMode() {
+      this.isDiet = true;
+      this.isLogin = false;
+      this.isWatch = false;
+    },
+    // watcherの新規登録の表示
+    WatcherMode() {
+      this.isWatch = true;
+      this.isLogin = false;
+      this.isDiet = false;
     },
   },
 }
