@@ -52,12 +52,12 @@ exports.handler = async (event, context) => {
       connection.query(insertSqlCommand, function(error, results, fields) {
         if (error) {
           throw new Error("MySQL Insert Error");
-          resolve(results);
         }
       });
+      resolve(results);
     });
     response.statusCode = 201;
-    const userId = result.data.insertId
+    const userId = result.insertId
     response.body = JSON.stringify({ userId });
     
     connection.end();
