@@ -41,7 +41,7 @@ exports.handler = async (event, context) => {
   
   try {
     const insertSqlCommand = `INSERT INTO ${mysqlTableName}(name, email, password) VALUES ('${name}', '${mailaddress}', '${password}')`;
-    const insertData = await new Promise((resolve, reject) => {
+    const data = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
         if (error) {
@@ -53,24 +53,21 @@ exports.handler = async (event, context) => {
         if (error) {
           throw new Error("MySQL Insert Error");
         }
-        resolve(results);
       });
-    });
 
-    const selectData = await new Promise((resolve, reject) => {
       const selectSqlCommand = `SELECT id FROM "${mysqlTableName}" WHERE email = "${mailaddress}" LIMIT 1`;
       // exec select
       connection.query(selectSqlCommand, function(error, results, fields) {
-        if (error || userId) {
+        if (error) {
           throw new Error("MySQL Select Error");
         }
         resolve(results);
       });
     });
-      
+
     response.statusCode = 201;
-    response.body = JSON.stringify({ selectData });
-    
+    response.body = JSON.stringify({ data });
+
     connection.end
   } catch (e) {
     response.statusCode = 500;
