@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
   });
   
   try {
-    const updateSqlCommand = `UPDATE ${mysqlTableName} SET age = '${age}', height = '${height}', weight = '${weight} WHERE user_id = '${userId}' LIMIT 1`;
+    const updateSqlCommand = `UPDATE ${mysqlTableName} SET age = '${age}', height = '${height}', weight = '${weight}' WHERE user_id = '${userId}' LIMIT 1`;
     const data = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
