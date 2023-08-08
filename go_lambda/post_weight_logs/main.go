@@ -15,7 +15,7 @@ import (
 type Request struct{
 	UserID int `json:"user_id"`
 	TodayWeight float32 `json:"today_weight"`
-	TimeStamp string `json:"time_stamp"`
+	Timestamp string `json:"timestamp"`
 }
 
 
@@ -41,7 +41,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return events.APIGatewayProxyResponse{StatusCode: 400, Body: "Invalid payload"}, nil
 	}
 
-	_, err = db.Exec("INSERT INTO weight_logs (user_id, today_weight, timestamp) VALUES (?, ?, ?)", body.UserID, body.TodayWeight,body.TimeStamp)
+	_, err = db.Exec("INSERT INTO weight_logs (user_id, today_weight, timestamp) VALUES (?, ?, ?)", body.UserID, body.TodayWeight,body.Timestamp)
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to insert data into DB"}, errors.New("DB Insert Error")
 	}
