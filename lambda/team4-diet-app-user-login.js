@@ -54,7 +54,7 @@ exports.handler = async (event, context) => {
         if (error) {
           reject("not found user data");
         } else if (results.password !== password) {
-          reject("not match password");
+          throw new Error("not match password")
         }
         resolve(results);
       });
@@ -65,7 +65,7 @@ exports.handler = async (event, context) => {
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
-      message: data,
+      message: "予期せぬエラーが発生しました。",
       errorDetail: e.toString(),
     });
   }
