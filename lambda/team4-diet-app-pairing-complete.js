@@ -8,7 +8,9 @@ const mysqlHost      = "team4-db.cylsclnu96ov.ap-northeast-1.rds.amazonaws.com";
 const mysqlUser      = "admin";
 const mysqlDbname    = "teams4";
 const mysqlPassword  = "j2002214J";
-const mysqlTableName = "users";
+
+const selectTableName = "pairing_processes";
+const insertTableName = "pair_users";
 
 exports.handler = async (event, context) => {
   const response = {
@@ -19,16 +21,21 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  // get parm data
-  const {mailaddress, password} = JSON.parse(event.body);
+  const {watcherUserId, passphrase, token} = JSON.parse(event.body);
 
   // validate
-  if (!mailaddress || !password) {
+  if (!watcherUserId || !passphrase) {
     response.statusCode = 400;
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",
     });
-
+    return response;
+  }
+  if (token != sessionToken) {
+    response.statusCode = 401;
+    response.body = JSON.stringify({
+       message: "not a valid token"
+    });
     return response;
   }
 
@@ -39,27 +46,47 @@ exports.handler = async (event, context) => {
     password : mysqlPassword,
     database : mysqlDbname
   });
-
+  
   try {
-    const selectSqlCommand = `SELECT id, name, password FROM ${mysqlTableName} WHERE email = '${mailaddress}' LIMIT 1`;
-    const data = await new Promise((resolve, reject) => {
+    const selectSqlCommand = `SELECT do_dieter FROM ${mysqlTableName} WHERE passphrase = '${passphrase}' LIMIT 1`;
+    const selectData = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
         if (error) {
-            throw new Error('error connecting: ' + error.stack);
+            reject('error connecting: ' + error.stack);
         }
       });
       // exec select
       connection.query(selectSqlCommand, function(error, results, fields) {
         if (error) {
-          reject("not found user data");
-        } else if (results.password !== password) {
-          reject("password is incorrect");
+          reject("not found pair user id");
         }
         resolve(results);
       });
     });
-    response.body = JSON.stringify({ data, token: sessionToken });
+
+    console.log(selectData);
+
+
+    const insertSqlCommand = `INSERT INTO ${mysqlTableName}(do_dieter, passphrase) VALUES ('${userId}', '${passphrase}')`;
+    const data = await new Promise((resolve, reject) => {
+      // get connect
+      connection.connect((error) => {
+        if (error) {
+            reject('error connecting: ' + error.stack);
+        }
+      });
+      // exec insert
+      connection.query(insertSqlCommand, function(error, results, fields) {
+        if (error) {
+          reject("MySQL Insert Error");
+        }
+        resolve(results);
+      });
+    });
+    response.statusCode = 201;
+    const message = "insert success"
+    response.body = JSON.stringify({ message });
 
     connection.end();
   } catch (e) {

@@ -8,7 +8,7 @@ const mysqlHost      = "team4-db.cylsclnu96ov.ap-northeast-1.rds.amazonaws.com";
 const mysqlUser      = "admin";
 const mysqlDbname    = "teams4";
 const mysqlPassword  = "j2002214J";
-const mysqlTableName = "users"
+const mysqlTableName = "users";
 
 exports.handler = async (event, context) => {
   const response = {
