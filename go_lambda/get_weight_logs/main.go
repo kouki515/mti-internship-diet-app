@@ -35,7 +35,7 @@ func init() {
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	token := request.Headers["Authorization"]
+	token := request.Headers["authorization"]
 	if token != "mtiToken" {
 		return events.APIGatewayProxyResponse{StatusCode: 401, Body: "Unauthorized"}, nil
 	}
