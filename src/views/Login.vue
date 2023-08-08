@@ -96,12 +96,12 @@ export default {
 
         try {
           /* global fetch */
-          // const res = await fetch(baseUrl + '/user/signup',
-          // {
-          //   method: 'POST',
-          //     body: JSON.stringify(requestBody),
-          //       headers
-          // });
+          const res = await fetch(baseUrl + '/user/signup',
+            {
+              method: 'POST',
+              body: JSON.stringify(requestBody),
+              headers
+            });
 
           const text = await res.text();
           const jsonData = text ? JSON.parse(text) : {}
