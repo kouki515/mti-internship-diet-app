@@ -19,7 +19,8 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  const {userId, passphrase, token} = JSON.parse(event.body);
+  const {userId, passphrase} = JSON.parse(event.body);
+  const token = event.headers.authorization;
 
   // validate
   if (!userId || !passphrase) {
