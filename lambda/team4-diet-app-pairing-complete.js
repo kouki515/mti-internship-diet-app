@@ -85,8 +85,7 @@ exports.handler = async (event, context) => {
       });
     });
     response.statusCode = 201;
-    const message = "insert success"
-    response.body = JSON.stringify({ message });
+    response.body = JSON.stringify({ dieterUserId });
 
     pool.end();
   } catch (e) {
