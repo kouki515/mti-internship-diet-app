@@ -45,7 +45,7 @@ exports.handler = async (event, context) => {
     const userInsertSqlCommand = `INSERT INTO ${mysqlTableName}(name, email, password) VALUES ('${name}', '${mailaddress}', '${password}')`;
     const data = await new Promise((resolve, reject) => {
       // get connect
-      pool.connect((error) => {
+      pool.getConnection((error) => {
         if (error) {
           reject('error connecting: ' + error.stack);
         }
