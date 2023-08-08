@@ -57,8 +57,7 @@ exports.handler = async (event, context) => {
       });
     });
     response.statusCode = 201;
-    const userId = data.insertId
-    response.body = JSON.stringify({ userId, token: sessionToken });
+    response.body = JSON.stringify({ data, token: sessionToken });
     
     connection.end();
   } catch (e) {
