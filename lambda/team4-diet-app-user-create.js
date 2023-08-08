@@ -52,21 +52,20 @@ exports.handler = async (event, context) => {
       connection.query(insertSqlCommand, function(error, results, fields) {
         if (error) {
           throw new Error("MySQL Insert Error");
+          resolve(results);
         }
-      });
-
-      const selectSqlCommand = `SELECT id FROM "${mysqlTableName}" WHERE email = "${mailaddress}" LIMIT 1`;
-      // exec select
-      connection.query(selectSqlCommand, function(error, results, fields) {
-        if (error) {
-          throw new Error("MySQL Select Error");
-        }
-        resolve(results);
       });
     });
 
-    response.statusCode = 201;
-    response.body = JSON.stringify({ data });
+    const selectSqlCommand = `SELECT id FROM ${mysqlTableName} WHERE email = '${mailaddress}' LIMIT 1`;
+    // exec select
+    connection.query(selectSqlCommand, function(error, results, fields) {
+      if (error) {
+        throw new Error("MySQL Select Error");
+      }
+      response.statusCode = 201;
+      response.body = JSON.stringify({ data });
+    });
 
     connection.end
   } catch (e) {
