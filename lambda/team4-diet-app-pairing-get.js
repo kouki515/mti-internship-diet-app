@@ -20,10 +20,10 @@ exports.handler = async (event, context) => {
   };
 
   // get parm data
-  const {mailaddress, password} = JSON.parse(event.body);
+  const {userId, passphrase} = JSON.parse(event.body);
 
   // validate
-  if (!mailaddress || !password) {
+  if (!userId || !passphrase) {
     response.statusCode = 400;
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",

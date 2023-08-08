@@ -1,7 +1,7 @@
 'use strict';
 
 const mysql = require('mysql');
-const token = "5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2";
+const sessionToken = "5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2";
 
 // RDS connection information
 const mysqlHost      = "team4-db.cylsclnu96ov.ap-northeast-1.rds.amazonaws.com";
@@ -19,7 +19,7 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  const {userId, passphrase} = JSON.parse(event.body);
+  const {userId, passphrase, token} = JSON.parse(event.body);
 
   // validate
   if (!userId || !passphrase) {
@@ -27,7 +27,13 @@ exports.handler = async (event, context) => {
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",
     });
-
+    return response;
+  }
+  if (token != sessionToken) {
+    response.statusCode = 401;
+    response.body = JSON.stringify({
+       message: "not a valid token"
+    });
     return response;
   }
 
