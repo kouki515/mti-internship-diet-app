@@ -56,7 +56,7 @@ exports.handler = async (event, context) => {
         resolve(results);
       });
     });
-    response.body = JSON.stringify({ data });
+    response.body = JSON.stringify({ data, token});
     
     connection.end();
   } catch (e) {
