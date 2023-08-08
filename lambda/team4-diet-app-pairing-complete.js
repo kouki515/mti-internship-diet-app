@@ -66,7 +66,7 @@ exports.handler = async (event, context) => {
       });
     });
 
-    const dieterUserId = selectData.do_dieter;
+    const dieterUserId = selectData[0].do_dieter;
 
     const insertSqlCommand = `INSERT INTO ${insertTableName}(watcher_dieter_id, do_dieter_id) VALUES ('${watcherUserId}', '${dieterUserId}')`;
     const insertData = await new Promise((resolve, reject) => {
@@ -84,7 +84,8 @@ exports.handler = async (event, context) => {
         resolve(results);
       });
     });
-    response.body = JSON.stringify({ insertData });
+    response.statusCode = 201;
+    response.body = JSON.stringify({ dieterUserId });
 
     pool.end();
   } catch (e) {
