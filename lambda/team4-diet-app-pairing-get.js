@@ -8,7 +8,7 @@ const mysqlHost      = "team4-db.cylsclnu96ov.ap-northeast-1.rds.amazonaws.com";
 const mysqlUser      = "admin";
 const mysqlDbname    = "teams4";
 const mysqlPassword  = "j2002214J";
-const mysqlTableName = "users";
+const mysqlTableName = "pairing_processes";
 
 exports.handler = async (event, context) => {
   const response = {
@@ -20,15 +20,22 @@ exports.handler = async (event, context) => {
   };
 
   // get parm data
-  const {mailaddress, password} = JSON.parse(event.body);
+  const {userId} = JSON.parse(event.body);
+  const token = event.headers.authorization;
 
   // validate
-  if (!mailaddress || !password) {
+  if (!userId) {
     response.statusCode = 400;
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",
     });
-
+    return response;
+  }
+  if (token != sessionToken) {
+    response.statusCode = 401;
+    response.body = JSON.stringify({
+       message: "not a valid token"
+    });
     return response;
   }
 
@@ -41,25 +48,23 @@ exports.handler = async (event, context) => {
   });
 
   try {
-    const selectSqlCommand = `SELECT id, name, password FROM ${mysqlTableName} WHERE email = '${mailaddress}' LIMIT 1`;
+    const selectSqlCommand = `SELECT passphrase FROM ${mysqlTableName} WHERE do_dieter = '${userId}' LIMIT 1`;
     const data = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
         if (error) {
-            throw new Error('error connecting: ' + error.stack);
+            reject('error connecting: ' + error.stack);
         }
       });
       // exec select
       connection.query(selectSqlCommand, function(error, results, fields) {
         if (error) {
-          reject("not found user data");
-        } else if (results.password !== password) {
-          reject("password is incorrect");
+          reject("not found pair user id");
         }
         resolve(results);
       });
     });
-    response.body = JSON.stringify({ data, token: sessionToken });
+    response.body = JSON.stringify({ data });
 
     connection.end();
   } catch (e) {

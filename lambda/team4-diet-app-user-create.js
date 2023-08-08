@@ -1,14 +1,14 @@
 'use strict';
 
 const mysql = require('mysql');
-const token = "5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2";
+const sessionToken = "5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2";
 
 // RDS connection information
 const mysqlHost      = "team4-db.cylsclnu96ov.ap-northeast-1.rds.amazonaws.com";
 const mysqlUser      = "admin";
 const mysqlDbname    = "teams4";
 const mysqlPassword  = "j2002214J";
-const mysqlTableName = "users"
+const mysqlTableName = "users";
 
 exports.handler = async (event, context) => {
   const response = {
@@ -57,8 +57,7 @@ exports.handler = async (event, context) => {
       });
     });
     response.statusCode = 201;
-    const userId = data.insertId
-    response.body = JSON.stringify({ userId, token });
+    response.body = JSON.stringify({ data, token: sessionToken });
     
     connection.end();
   } catch (e) {
