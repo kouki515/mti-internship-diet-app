@@ -58,7 +58,7 @@ exports.handler = async (event, context) => {
     });
     response.statusCode = 201;
     const userId = data.insertId
-    response.body = JSON.stringify({ userId });
+    response.body = JSON.stringify({ userId, token });
     
     connection.end();
   } catch (e) {
