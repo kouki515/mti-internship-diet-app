@@ -37,8 +37,10 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 	body := Request{}
 	err := json.Unmarshal([]byte(request.Body), &body)
+
+	_, err = db.Exec("UPDATE user_details SET weight = ? WHERE users_id = ?", body.TodayWeight, body.UserID)
 	if err != nil {
-		return events.APIGatewayProxyResponse{StatusCode: 400, Body: "Invalid payload"}, nil
+		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to insert data into DB"}, errors.New("DB Insert Error")
 	}
 
 	_, err = db.Exec("INSERT INTO weight_logs (user_id, today_weight, timestamp) VALUES (?, ?, ?)", body.UserID, body.TodayWeight,body.Timestamp)
