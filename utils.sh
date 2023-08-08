@@ -39,7 +39,7 @@ lambda_deploy() {
     if [ $? -eq 0 ]; then
         # functionが存在している時
         echo "関数${funame}の内容を更新します"
-        zip -r ${funame}.zip ${filename}
+        zip -r ${funame}.zip ${filename} node_modules
         aws lambda update-function-code  --function-name ${funame} \
         --zip-file fileb://${funame}.zip
         rm ${funame}.zip
@@ -47,7 +47,7 @@ lambda_deploy() {
     else
         # functionが存在していない時
         echo "関数${funame}のデプロイを開始します"
-        zip -r ${funame}.zip ${filename}
+        zip -r ${funame}.zip ${filename} node_modules
         aws lambda create-function  --function-name ${funame} \
         --runtime nodejs18.x \
         --role arn:aws:iam::347867041416:role/internship_exec_role \

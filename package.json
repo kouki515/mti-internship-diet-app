@@ -9,6 +9,7 @@
     "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "mysql": "^2.18.1",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
