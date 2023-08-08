@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
   };
 
   // get parm data
-  const {userId, passphrase, token} = JSON.parse(event.body);
+  const {userId, token} = JSON.parse(event.body);
 
   // validate
   if (!userId) {
@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
   });
 
   try {
-    const selectSqlCommand = `SELECT do_dieter FROM ${mysqlTableName} WHERE passphrase = '${passphrase}' LIMIT 1`;
+    const selectSqlCommand = `SELECT passphrase FROM ${mysqlTableName} WHERE do_dieter = '${userId}' LIMIT 1`;
     const data = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
