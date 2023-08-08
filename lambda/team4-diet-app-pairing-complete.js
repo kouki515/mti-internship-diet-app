@@ -11,6 +11,7 @@ const mysqlPassword  = "j2002214J";
 
 const selectTableName = "pairing_processes";
 const insertTableName = "pair_users";
+const updateTableName   = "user_details";
 
 exports.handler = async (event, context) => {
   const response = {
@@ -84,8 +85,43 @@ exports.handler = async (event, context) => {
         resolve(results);
       });
     });
+
+    const watcherUpdateSqlCommand = `UPDATE ${updateDataTableName} SET role = 'watcher' WHERE user_id = '${watcherUserId}' LIMIT 1`;
+    const watcherUpdateData = await new Promise((resolve, reject) => {
+      // get connect
+      pool.getConnection((error) => {
+        if (error) {
+            reject('error connecting: ' + error.stack);
+        }
+      });
+      // exec update
+      pool.query(watcherUpdateSqlCommand, function(error, results, fields) {
+        if (error) {
+          reject(error);
+        }
+        resolve(results);
+      });
+    });
+
+    const dieterUpdateSqlCommand = `UPDATE ${updateDataTableName} SET role = 'dieter' WHERE user_id = '${watcherUserId}' LIMIT 1`;
+    const dieterUpdateData = await new Promise((resolve, reject) => {
+      // get connect
+      pool.getConnection((error) => {
+        if (error) {
+            reject('error connecting: ' + error.stack);
+        }
+      });
+      // exec update
+      pool.query(dieterUpdateSqlCommand, function(error, results, fields) {
+        if (error) {
+          reject(error);
+        }
+        resolve(results);
+      });
+    });
+
     response.statusCode = 201;
-    const message = "insert success"
+    const message = "success"
     response.body = JSON.stringify({ message });
 
     pool.end();
