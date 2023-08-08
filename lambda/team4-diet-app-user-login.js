@@ -19,6 +19,7 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
+  // get parm data
   const {mailaddress, password} = JSON.parse(event.body);
 
   // validate
@@ -52,12 +53,14 @@ exports.handler = async (event, context) => {
       connection.query(selectSqlCommand, function(error, results, fields) {
         if (error) {
           reject("not found user data");
+        } else if (results.password !== password) {
+          reject("not match password");
         }
         resolve(results);
       });
     });
-    response.body = JSON.stringify({ data, token});
-    
+    response.body = JSON.stringify({ data, token });
+
     connection.end();
   } catch (e) {
     response.statusCode = 500;
