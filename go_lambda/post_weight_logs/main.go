@@ -38,12 +38,19 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	body := Request{}
 	err := json.Unmarshal([]byte(request.Body), &body)
 
-	_, err = db.Exec("UPDATE user_details SET weight = ? WHERE users_id = ?", body.TodayWeight, body.UserID)
+	tr, err := db.Begin()
+	_, err = db.Exec("UPDATE user_details SET weight = ? WHERE user_id = ?", body.TodayWeight, body.UserID)
 	if err != nil {
+		tr.Rollback()
 		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to insert data into DB"}, errors.New("DB Insert Error")
 	}
 
 	_, err = db.Exec("INSERT INTO weight_logs (user_id, today_weight, timestamp) VALUES (?, ?, ?)", body.UserID, body.TodayWeight,body.Timestamp)
+	if err != nil {
+		tr.Rollback()
+		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to insert data into DB"}, errors.New("DB Insert Error")
+	}
+	err = tr.Commit()
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to insert data into DB"}, errors.New("DB Insert Error")
 	}
