@@ -8,7 +8,7 @@ const mysqlHost      = "team4-db.cylsclnu96ov.ap-northeast-1.rds.amazonaws.com";
 const mysqlUser      = "admin";
 const mysqlDbname    = "teams4";
 const mysqlPassword  = "j2002214J";
-const mysqlTableName = "pairing_processes";
+const mysqlTableName = "user_details";
 
 exports.handler = async (event, context) => {
   const response = {
@@ -19,11 +19,11 @@ exports.handler = async (event, context) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  const {userId, passphrase} = JSON.parse(event.body);
+  const {userId, age, height, weight} = JSON.parse(event.body);
   const token = event.headers.authorization;
 
   // validate
-  if (!userId || !passphrase) {
+  if (!userId || !age || !height || !weight) {
     response.statusCode = 400;
     response.body = JSON.stringify({
       message: "not a valid data, enter the required parameters",
@@ -47,7 +47,7 @@ exports.handler = async (event, context) => {
   });
   
   try {
-    const insertSqlCommand = `INSERT INTO ${mysqlTableName}(do_dieter, passphrase) VALUES ('${userId}', '${passphrase}')`;
+    const updateSqlCommand = `UPDATE ${mysqlTableName} SET age = '${age}', height = '${height}', weight = '${weight} WHERE user_id = '${userId}' LIMIT 1`;
     const data = await new Promise((resolve, reject) => {
       // get connect
       connection.connect((error) => {
@@ -55,16 +55,15 @@ exports.handler = async (event, context) => {
             reject('error connecting: ' + error.stack);
         }
       });
-      // exec insert
+      // exec update
       connection.query(insertSqlCommand, function(error, results, fields) {
         if (error) {
-          reject("MySQL Insert Error");
+          reject("MySQL Update Error");
         }
         resolve(results);
       });
     });
-    response.statusCode = 201;
-    const message = "insert success"
+    const message = "update success"
     response.body = JSON.stringify({ message });
 
     connection.end();
