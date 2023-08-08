@@ -42,7 +42,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return events.APIGatewayProxyResponse{StatusCode: 400, Body: "Invalid payload"}, nil
 	}
 
-	_, err = db.Exec("UPDATE weight_goals SET weight_goal = ? WHERE id = ?", body.WeightGoals,body.UserID)
+	_, err = db.Exec("UPDATE weight_goals SET weight_goal = ? WHERE user_id = ?", body.WeightGoals,body.UserID)
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 500, Body: "Failed to insert data into DB"}, errors.New("DB Insert Error")
 	}
