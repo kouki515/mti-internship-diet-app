@@ -11,7 +11,7 @@
           <div class="field">
             <div class="t">
               <label for="">メールアドレス</label>
-              <input type="email" placeholder="12345@example.com" v-model=users.email required>
+              <input type="email" placeholder="12345@example.com" v-model=users.mailaddress required>
             </div>
             <div class="t">
               <label for="">パスワード</label>
@@ -44,7 +44,7 @@
         <form class="ui form">
           <div class="field">
             <label for="email">メールアドレス：</label>
-            <input type="email" id="email" name="email" required v-model="users.email">
+            <input type="email" id="email" name="email" required v-model="users.mailaddress">
           </div>
           <div class="field">
             <label for="password">パスワード：</label>
@@ -54,19 +54,19 @@
             <label for="username">ユーザーネーム：</label>
             <input type="text" id="username" name="username" required v-model="users.name">
           </div>
-          <div class="field">
+          <!-- <div class="field">
             <label for="height">身長（cm）：</label>
             <input type="number" id="height" name="height" v-model.number="users.height">
           </div>
           <div class="field">
             <label for="weight">体重（kg）：</label>
             <input type="number" id="weight" name="weight" v-model="users.weight">
-          </div>
+          </div> -->
           <!-- <div class="field">
             <label for="weight">目標体重（kg）：</label>
             <input type="number" id="weight" name="weight" v-model="users.weight_goal">
           </div> -->
-          <div class="field">
+          <!-- <div class="field">
             <label for="age">年齢：</label>
             <input type="number" id="age" name="age" required v-model.number="users.age">
           </div>
@@ -74,7 +74,7 @@
             <label for="secret_word">合言葉：</label>
             <input type="password" id="secret_word" name="secret_word" placeholder="合言葉を決めてください" required
               v-model="users.secret_word">
-          </div>
+          </div> -->
           <button class="ui olive fluid button" type="submit" @click="submit()">サインアップ</button>
         </form>
       </div>
@@ -87,7 +87,7 @@
           <form class="ui form">
             <div class="field">
               <label for="email">メールアドレス：</label>
-              <input type="email" id="email" name="email" v-model="users.email" required>
+              <input type="email" id="email" name="email" v-model="users.mailaddress" required>
             </div>
             <div class="field">
               <label for="password">パスワード：</label>
@@ -97,12 +97,12 @@
               <label for="username">ユーザーネーム：</label>
               <input type="text" id="username" name="username" v-model="users.name" required>
             </div>
-            <div class="field">
+            <!-- <div class="field">
               <label for="secret_word">合言葉：</label>
               <input type="password" id="secret_word" name="secret_word" placeholder="教えてもらった合言葉を入れて下さい"
                 v-model="users.secret_word" required>
-            </div>
-            <button class="ui olive fluid button" type="submit">サインアップ</button>
+            </div> -->
+            <button class="ui olive fluid button" type="submit" @click="submit()">サインアップ</button>
           </form>
         </div>
       </div>
@@ -132,16 +132,15 @@ export default {
       // ダイエットする人に必要な変数
       users: {
         // userId: "test",
-        id: 1,
-        email: "testmail@icloud.com",
-        password: "testpas",
-        name: "testname",
-        role: "dieter",
-        height: 170,
-        weight: 60,
-        weight_goal: 50,
-        age: 22,
-        secret_word: "test",
+        id: Number,
+        mailaddress: "",
+        password: "",
+        name: "",
+        // height: 170,
+        // weight: 60,
+        // weight_goal: 50,
+        // age: 22,
+        // secret_word: "test",
       }
     };
   },
@@ -157,13 +156,13 @@ export default {
       // dieterの新規登録
       if (this.isDiet && this.isLogin == false && this.isWatch == false) {
 
-        const headers = { 'Authorization': '5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2' };
         // リクエストボディを指定する
         const requestBody = {
-          userId: this.users.userId,
+          name: this.users.name,
+          mailaddress: this.users.mailaddress,
           password: this.users.password,
         }
-        console.log(this.users.email);
+        console.log(this.requestBody);
 
         try {
           /* global fetch */
@@ -171,11 +170,11 @@ export default {
             {
               method: 'POST',
               body: JSON.stringify(requestBody),
-              headers
             });
 
           const text = await res.text();
           const jsonData = text ? JSON.parse(text) : {}
+          console.log(text);
 
           // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
           if (!res.ok) {
@@ -187,7 +186,7 @@ export default {
           window.localStorage.setItem('token', jsonData.token);
           window.localStorage.setItem('userId', this.user.userId);
 
-          // this.$router.push({ name: 'Home' })
+          this.$router.push({ name: 'Home' })
           console.log(jsonData);
         } catch (e) {
           // エラー時の処理
@@ -201,7 +200,8 @@ export default {
         const headers = { 'Authorization': '5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2' };
 
         const requestBody = {
-          userId: this.users.userId,
+          name: this.users.name,
+          mailaddress: this.users.mailaddress,
           password: this.users.password,
         }
 
@@ -213,6 +213,7 @@ export default {
               body: JSON.stringify(requestBody),
               headers
             });
+          console.log(this.requestBody);
 
           const text = await res.text();
           const jsonData = text ? JSON.parse(text) : {}
@@ -226,7 +227,6 @@ export default {
           // 成功時の処理
           window.localStorage.setItem('token', jsonData.token);
           window.localStorage.setItem('userId', this.users.userId);
-          window.localStorage.setItem('name', this.users.name);
 
           // this.$router.push({ name: 'Home' })
         } catch (e) {
@@ -237,10 +237,9 @@ export default {
       // ログイン時の処理
       else if (this.isLogin && this.isDiet == false && this.isWatch == false) {
         // リクエストボディを指定する
-        const headers = { 'Authorization': '5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2' };
 
         const requestBody = {
-          userId: this.users.userId,
+          mailaddress: this.users.mailaddress,
           password: this.users.password,
         }
 
@@ -250,10 +249,10 @@ export default {
             {
               method: 'POST',
               body: JSON.stringify(requestBody),
-              headers
             });
-
+          console.log(requestBody);
           const text = await res.text();
+          console.log(text);
           const jsonData = text ? JSON.parse(text) : {}
 
           // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
@@ -262,10 +261,9 @@ export default {
             throw new Error(errorMessage);
           }
           // 成功時の処理
-          window.localStorage.setItem('token', jsonData.token);
+          console.log(jsonData);
+          window.localStorage.setItem('token', jsonData.sessiontoken);
           window.localStorage.setItem('userId', this.users.userId);
-          window.localStorage.setItem('userId', this.users.password);
-
 
           // this.$router.push({ name: 'Home' })
         } catch (e) {
