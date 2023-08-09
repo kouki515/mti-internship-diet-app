@@ -50,7 +50,7 @@
 import { baseUrl } from '@/assets/config.js';
 
 export default {
-  name: 'Login',
+  // name: 'Login',
 
   components: {
     // 読み込んだコンポーネント名をここに記述する

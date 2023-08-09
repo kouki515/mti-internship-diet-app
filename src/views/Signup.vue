@@ -157,7 +157,7 @@ export default {
       // dieterの新規登録
       if (this.isDiet && this.isLogin == false && this.isWatch == false) {
 
-        const headers = { 'Authorization': 'mtiToken' };
+        const headers = { 'Authorization': '5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2' };
         // リクエストボディを指定する
         const requestBody = {
           userId: this.users.userId,
@@ -198,7 +198,7 @@ export default {
       // watcherの新規登録時に実行
       else if (this.isWatch && this.isDiet == false && this.isLogin == false) {
         // リクエストボディを指定する
-        const headers = { 'Authorization': 'mtiToken' };
+        const headers = { 'Authorization': '5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2' };
 
         const requestBody = {
           userId: this.users.userId,
@@ -237,7 +237,7 @@ export default {
       // ログイン時の処理
       else if (this.isLogin && this.isDiet == false && this.isWatch == false) {
         // リクエストボディを指定する
-        const headers = { 'Authorization': 'mtiToken' };
+        const headers = { 'Authorization': '5da50cf80844d2cdab1bc15aa9e64802c7d365dec585b2896b9ef46f4274bfc2' };
 
         const requestBody = {
           userId: this.users.userId,
