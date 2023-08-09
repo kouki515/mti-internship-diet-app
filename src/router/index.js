@@ -1,10 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import Profile from '../views/Profile.vue'
-import User from '../views/User.vue'
 import Signup from '../views/Signup.vue'
 import Logs from '../views/Logs.vue'
+import Pairing from '../views/Pairing.vue'
+
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -18,27 +17,11 @@ const router = createRouter({
       }
     },
     {
-      path: '/login',
-      name: 'Login',
-      component: Login,
+      path: '/pairing',
+      name: 'Pairing',
+      component: Pairing,
       meta: {
-        title: 'Login'
-      }
-    },
-    {
-      path: '/profile',
-      name: 'Profile',
-      component: Profile,
-      meta: {
-        title: 'Profile'
-      }
-    },
-    {
-      path: '/user',
-      name: 'User',
-      component: User,
-      meta: {
-        title: 'User'
+        title: 'Pairing'
       }
     },
     {
