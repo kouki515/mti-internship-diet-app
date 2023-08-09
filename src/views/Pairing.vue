@@ -6,7 +6,7 @@
           <label>あいことば</label>
           <input type="text" v-model="passphrase">
         </div>
-        <button class="ui button" @click="submitToLambda1">パートナーを応援する</button>
+        <button class="ui button" @click="pairingEnd">パートナーを応援する</button>
         <button class="ui button" @click="pairingStart">パートナーを探す</button>
       </form>
     </div>
@@ -48,8 +48,6 @@ export default {
         userId: this.userId,
         passphrase: this.passphrase
       }
-      console.log(this.userId);
-      console.log(this.passphrase);
 
       try {
         /* global fetch */
@@ -68,11 +66,42 @@ export default {
           const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
           throw new Error(errorMessage);
         }
-
-        this.$router.push({ name: 'Home' })
         console.log(jsonData);
       } catch (e) {
         // エラー時の処理
+        console.log(e);
+      }
+    },
+
+    async pairingEnd() {
+      const headers = { 'Authorization': this.token };
+      // リクエストボディを指定する
+      const requestBody = {
+        watcherUserId: this.userId,
+        passphrase: this.passphrase
+      }
+
+      try {
+        /* global fetch */
+        const res = await fetch(baseUrl + '/pairing/end',
+        {
+          method: 'POST',
+          body: JSON.stringify(requestBody),
+          headers
+        });
+
+        const text = await res.text();
+        const jsonData = text ? JSON.parse(text) : {}
+
+        // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
+        if (!res.ok) {
+          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
+          throw new Error(errorMessage);
+        }
+        console.log(jsonData);
+      } catch (e) {
+        // エラー時の処理
+        console.log(e);
       }
     }
   },

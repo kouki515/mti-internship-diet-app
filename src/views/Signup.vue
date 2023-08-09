@@ -6,7 +6,6 @@
         <h1>LOGIN</h1>
       </header>
       <h1 class="ui center aligned header" v-if="isLogin == false">サインアップ</h1>
-
       <div class="ui segment">
         <h4>必要なログイン情報をご入力ください。</h4>
         <form class="ui large form">
@@ -86,7 +85,7 @@ export default {
           mailaddress: this.users.mailaddress,
           password: this.users.password,
         }
-        console.log(this.requestBody);
+        // console.log(this.requestBody);
 
         try {
           /* global fetch */
@@ -98,7 +97,7 @@ export default {
 
           const text = await res.text();
           const jsonData = text ? JSON.parse(text) : {}
-          console.log(text);
+          // console.log(text);
 
           // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
           if (!res.ok) {
@@ -108,10 +107,10 @@ export default {
 
           // 成功時の処理
           window.localStorage.setItem('token', jsonData.token);
-          window.localStorage.setItem('userId', this.user.userId);
+          window.localStorage.setItem('userId', jsonData.data[0].id);
 
           this.$router.push({ name: 'Home' })
-          console.log(jsonData);
+          // console.log(jsonData);
         } catch (e) {
           // エラー時の処理
           console.log("notFound");
@@ -134,9 +133,9 @@ export default {
               method: 'POST',
               body: JSON.stringify(requestBody),
             });
-          console.log(requestBody);
+          // console.log(requestBody);
           const text = await res.text();
-          console.log(text);
+          // console.log(text);
           const jsonData = text ? JSON.parse(text) : {}
 
           // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
@@ -146,13 +145,11 @@ export default {
           }
           // 成功時の処理
           console.log(jsonData);
-          window.localStorage.setItem('token', jsonData.sessiontoken);
-          window.localStorage.setItem('userId', this.users.userId);
-
+          window.localStorage.setItem('token', jsonData.token);
+          window.localStorage.setItem('userId', jsonData.data[0].id);
           // this.$router.push({ name: 'Home' })
         } catch (e) {
           // エラー時の処理
-          console.log("notFound");
         }
       }
     },
