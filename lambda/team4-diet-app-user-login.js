@@ -53,7 +53,7 @@ exports.handler = async (event, context) => {
       connection.query(selectSqlCommand, function(error, results, fields) {
         if (error) {
           reject("not found user data");
-        } else if (results.password !== password) {
+        } else if (results[0].password != password) {
           reject("password is incorrect");
         }
         resolve(results);
