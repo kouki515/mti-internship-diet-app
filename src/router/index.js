@@ -1,7 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Signup from '../views/Signup.vue'
+import Logs from '../views/Logs.vue'
 import Pairing from '../views/Pairing.vue'
+
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -29,6 +31,14 @@ const router = createRouter({
       meta: {
         title: 'Signup'
       }
+    },
+    {
+      path: '/logs',
+      name: 'Logs',
+      component: Logs,
+      meta: {
+        title: 'Logs'
+      },
     },
   ]
 })
