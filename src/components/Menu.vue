@@ -2,7 +2,6 @@
     <div class="ui secondary pointing green inverted missive menu">
         <router-link active-class="active" class="item" exact to='/'>Home</router-link>
         <router-link active-class="active" class="item" to='/user'>User</router-link>
-        <router-link active-class="active" class="item" to='/profile'>Profile</router-link>
         <router-link active-class="active" class="item" to='/pairing'>Pairing</router-link>
         <div class="right menu">
             <a @click="logout" class="item">logout</a>

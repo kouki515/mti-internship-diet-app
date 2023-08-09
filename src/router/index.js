@@ -15,14 +15,6 @@ const router = createRouter({
       }
     },
     {
-      path: '/login',
-      name: 'Login',
-      component: Login,
-      meta: {
-        title: 'Login'
-      }
-    },
-    {
       path: '/pairing',
       name: 'Pairing',
       component: Pairing,
