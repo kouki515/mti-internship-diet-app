@@ -9,19 +9,18 @@
     </div>
 </template>
 <script>
-    export default {
-        name: 'Menu',
-        computed: {
-            
-        },
-        methods: {
-            logout() {
-                window.localStorage.clear();
-                this.$router.push({name: "Login"});
-            }
-        },
-    };
+export default {
+    name: 'Menu',
+    computed: {
+
+    },
+    methods: {
+        logout() {
+            window.localStorage.clear();
+            this.$router.push({ name: "Login" });
+            console.log("delete");
+        }
+    },
+};
 </script>
-<style scoped>
-    
-</style>
+<style scoped></style>
