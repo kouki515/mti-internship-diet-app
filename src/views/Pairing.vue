@@ -6,8 +6,8 @@
           <label>あいことば</label>
           <input type="text" v-model="passphrase">
         </div>
-        <button class="ui button" @click="submitToLambda1">パートナーを探す</button>
-        <button class="ui button" @click="pairingStart">パートナーを待つ</button>
+        <button class="ui button" @click="submitToLambda1">パートナーを応援する</button>
+        <button class="ui button" @click="pairingStart">パートナーを探す</button>
       </form>
     </div>
   </div>
