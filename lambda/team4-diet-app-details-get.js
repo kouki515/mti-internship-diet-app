@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
   };
 
   // get parm data
-  const {userId} = event.queryStringParameters.userId; 
+  const userId = event.queryStringParameters.userId; 
   const token = event.headers.authorization;
 
   // validate
