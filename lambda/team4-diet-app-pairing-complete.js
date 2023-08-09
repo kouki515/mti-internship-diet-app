@@ -86,7 +86,7 @@ exports.handler = async (event, context) => {
       });
     });
 
-    const watcherUpdateSqlCommand = `UPDATE ${updateDataTableName} SET role = 'watcher' WHERE user_id = '${watcherUserId}' LIMIT 1`;
+    const watcherUpdateSqlCommand = `UPDATE ${updateTableName} SET role = 'watcher' WHERE user_id = '${watcherUserId}' LIMIT 1`;
     const watcherUpdateData = await new Promise((resolve, reject) => {
       // get connect
       pool.getConnection((error) => {
@@ -103,7 +103,7 @@ exports.handler = async (event, context) => {
       });
     });
 
-    const dieterUpdateSqlCommand = `UPDATE ${updateDataTableName} SET role = 'dieter' WHERE user_id = '${watcherUserId}' LIMIT 1`;
+    const dieterUpdateSqlCommand = `UPDATE ${updateTableName} SET role = 'dieter' WHERE user_id = '${watcherUserId}' LIMIT 1`;
     const dieterUpdateData = await new Promise((resolve, reject) => {
       // get connect
       pool.getConnection((error) => {
